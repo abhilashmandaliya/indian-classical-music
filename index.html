@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lokijs/1.5.12/lokijs.min.js"
+        integrity="sha512-aSbdfyDpBetjOHWSkZDhdg+wTgQvG/6inTOzFVHJ/0Z6h3Bx2vLGVzp+/902uDdr8S9f4GultmcefJh9/Ymi0Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function () {
+            // Constants defining all 12 swaras.
+            const SA = "Sa";
+            const RE_K = "Komal Re";
+            const RE = "Re";
+            const GA_K = "Komal Ga";
+            const GA = "Ga";
+            const MA = "Ma";
+            const MA_T = "Teevra Ma";
+            const PA = "Pa";
+            const DHA_K = "Komal Dha";
+            const DHA = "Dha";
+            const NI_K = "Komal Ni";
+            const NI = "Ni";
+
+
+            var db = new loki('music.db');
+
+            var swaras = db.addCollection('swaras');
+            swaras.insert([
+                { id: 1, name: SA },
+                { id: 2, name: RE_K }, { id: 3, name: RE },
+                { id: 4, name: GA_K }, { id: 5, name: GA },
+                { id: 6, name: MA }, { id: 7, name: MA_T },
+                { id: 8, name: PA },
+                { id: 9, name: DHA_K }, { id: 10, name: DHA },
+                { id: 11, name: NI_K }, { id: 12, name: NI },
+            ]);
+            // swaras.find().forEach(swara => { console.log(swara); });
+
+            var swaraProperties = db.addCollection('swaraProperties');
+            swaraProperties.insert([
+                { swaraId: 1, planet: 'Sun' },
+                { swaraId: 3, planet: 'Mercury' },
+                { swaraId: 5, planet: 'Saturn' },
+                { swaraId: 6, planet: 'Venus' },
+                { swaraId: 8, planet: 'Moon' },
+                { swaraId: 10, planet: 'Mars' },
+                { swaraId: 12, planet: 'Jupiter' },
+            ]);
+
+            var swaraPropertiesMapFun = function (left, right) {
+                return {
+                    swara: left.name,
+                    planet: right.planet
+                }
+            };
+
+            var swaraPropertiesMapping = swaras.chain().eqJoin(swaraProperties, 'id', 'swaraId', swaraPropertiesMapFun).data()
+            // swaraPropertiesMapping.forEach(element => { console.log(element); });
+        });
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
