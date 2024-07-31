@@ -5,69 +5,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lokijs/1.5.12/lokijs.min.js"
         integrity="sha512-aSbdfyDpBetjOHWSkZDhdg+wTgQvG/6inTOzFVHJ/0Z6h3Bx2vLGVzp+/902uDdr8S9f4GultmcefJh9/Ymi0Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
-            // Constants defining all 12 swaras.
-            const SA = "Sa";
-            const RE_K = "Komal Re";
-            const RE = "Re";
-            const GA_K = "Komal Ga";
-            const GA = "Ga";
-            const MA = "Ma";
-            const MA_T = "Teevra Ma";
-            const PA = "Pa";
-            const DHA_K = "Komal Dha";
-            const DHA = "Dha";
-            const NI_K = "Komal Ni";
-            const NI = "Ni";
-
+            // Constants defining all 12 swars.
+            var SA = [1, "Sa"];
+            var RE_K = [2, "Komal Re"];
+            var RE = [3, "Re"];
+            var GA_K = [4, "Komal Ga"];
+            var GA = [5, "Ga"];
+            var MA = [6, "Ma"];
+            var MA_T = [7, "Teevra Ma"];
+            var PA = [8, "Pa"];
+            var DHA_K = [9, "Komal Dha"];
+            var DHA = [10, "Dha"];
+            var NI_K = [11, "Komal Ni"];
+            var NI = [12, "Ni"];
+            const SWAR_ID = "swarId";
 
             var db = new loki('music.db');
 
-            var swaras = db.addCollection('swaras');
-            swaras.insert([
-                { id: 1, name: SA },
-                { id: 2, name: RE_K }, { id: 3, name: RE },
-                { id: 4, name: GA_K }, { id: 5, name: GA },
-                { id: 6, name: MA }, { id: 7, name: MA_T },
-                { id: 8, name: PA },
-                { id: 9, name: DHA_K }, { id: 10, name: DHA },
-                { id: 11, name: NI_K }, { id: 12, name: NI },
+            var swars = db.addCollection('swars');
+            swars.insert([
+                { id: SA[0], name: SA[1] },
+                { id: RE_K[0], name: RE_K[1] }, { id: RE[0], name: RE[1] },
+                { id: GA_K[0], name: GA_K[1] }, { id: GA[0], name: GA[1] },
+                { id: MA[0], name: MA[1] }, { id: MA_T[0], name: MA_T[1] },
+                { id: PA[0], name: PA[1] },
+                { id: DHA_K[0], name: DHA_K[1] }, { id: DHA[0], name: DHA[1] },
+                { id: NI_K[0], name: NI_K[1] }, { id: NI[0], name: NI[1] },
             ]);
-            // swaras.find().forEach(swara => { console.log(swara); });
+            // swars.find().forEach(swar => { console.log(swar); });
 
-            var swaraProperties = db.addCollection('swaraProperties');
-            swaraProperties.insert([
-                { swaraId: 1, planet: 'Sun' },
-                { swaraId: 3, planet: 'Mercury' },
-                { swaraId: 5, planet: 'Saturn' },
-                { swaraId: 6, planet: 'Venus' },
-                { swaraId: 8, planet: 'Moon' },
-                { swaraId: 10, planet: 'Mars' },
-                { swaraId: 12, planet: 'Jupiter' },
+            var swarProperties = db.addCollection('swarProperties');
+            swarProperties.insert([
+                { swarId: SA[0], planet: 'Sun' },
+                { swarId: RE[0], planet: 'Mercury' },
+                { swarId: GA[0], planet: 'Saturn' },
+                { swarId: MA[0], planet: 'Venus' },
+                { swarId: PA[0], planet: 'Moon' },
+                { swarId: DHA[0], planet: 'Mars' },
+                { swarId: NI[0], planet: 'Jupiter' }
             ]);
 
-            var swaraPropertiesMapFun = function (left, right) {
+            var swarPropertyNames = ['planet'];
+            var swarPropertiesMapFun = function (left, right) {
                 return {
-                    swara: left.name,
+                    swar: left.name,
+                    swarId: right.swarId,
                     planet: right.planet
                 }
             };
 
-            var swaraPropertiesMapping = swaras.chain().eqJoin(swaraProperties, 'id', 'swaraId', swaraPropertiesMapFun).data()
-            // swaraPropertiesMapping.forEach(element => { console.log(element); });
+            var swarPropertiesMapping = swars.chain().eqJoin(swarProperties, 'id', 'swarId', swarPropertiesMapFun).data()
+            // swarPropertiesMapping.forEach(element => { console.log(element); });
+            var allPropertiesWithAllSwarValues = Array()
+            swarPropertyNames.forEach(swarProperty => {
+                let propertiesForSwar = [
+                    swarProperty,
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == SA[0])[0][swarProperty],
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == RE[0])[0][swarProperty],
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == GA[0])[0][swarProperty],
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == MA[0])[0][swarProperty],
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == PA[0])[0][swarProperty],
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == DHA[0])[0][swarProperty],
+                    swarPropertiesMapping.filter(p => p[SWAR_ID] == NI[0])[0][swarProperty],
+                ];
+                allPropertiesWithAllSwarValues.push(propertiesForSwar);
+            });
+            allPropertiesWithAllSwarValues.forEach(allSwarProperties => {
+                var append = '';
+                allSwarProperties.forEach(val => {
+                    append += '<td>' + capitalize(val) + '</td>'
+                })
+                append = '<tr>' + append + '</tr>';
+                $('#swarProperties').append(append);
+            });
+            // console.log(allPropertiesWithAllSwarValues);
         });
+
+        function capitalize(s) {
+            return s[0].toUpperCase() + s.slice(1);
+        }
     </script>
 </head>
 
 <body>
-
+    <div class="container mt-3">
+        <h2>Swar Properties</h2>
+        <table class="table table-bordered" id="swarProperties">
+            <thead>
+                <tr>
+                    <th>Property/Swar</th>
+                    <th>Sa</th>
+                    <th>Re</th>
+                    <th>Ga</th>
+                    <th>Ma</th>
+                    <th>Pa</th>
+                    <th>Dha</th>
+                    <th>Ni</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </body>
 
 </html>
